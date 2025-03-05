@@ -15,6 +15,11 @@ OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
 AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
+# Print the variables to verify they are retrieved
+print("OPENAI_DEPLOYMENT_NAME:", OPENAI_DEPLOYMENT_NAME)
+print("AZURE_OPENAI_ENDPOINT:", AZURE_OPENAI_ENDPOINT)
+print("OPENAI_API_KEY:", OPENAI_API_KEY)
+
 if not all([OPENAI_DEPLOYMENT_NAME, AZURE_OPENAI_ENDPOINT, OPENAI_API_KEY]):
     st.error("Missing required environment variables. Check your GitHub Secrets.")
     st.stop()
