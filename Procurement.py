@@ -18,20 +18,30 @@ OPENAI_API_KEY = "9H2xSSea55fgTnoiHe38HqhygQvQTN5kTiB6jcCLy28tC6DAOF1HJQQJ99BBAC
 llm = None  # Default to None to prevent NameError
 
 try:
-    # Ensure all required values are available before initializing
-    if OPENAI_DEPLOYMENT_NAME and AZURE_OPENAI_ENDPOINT and OPENAI_API_KEY:
+    # Check which environment variable is missing
+    missing_keys = []
+    
+    if not OPENAI_DEPLOYMENT_NAME:
+        missing_keys.append("OPENAI_DEPLOYMENT_NAME")
+    if not AZURE_OPENAI_ENDPOINT:
+        missing_keys.append("AZURE_OPENAI_ENDPOINT")
+    if not OPENAI_API_KEY:
+        missing_keys.append("OPENAI_API_KEY")
+
+    # If any key is missing, display an error message
+    if missing_keys:
+        st.error(f"❌ Missing required Azure environment variables: {', '.join(missing_keys)}")
+    else:
+        # All required keys are available
         llm = AzureChatOpenAI(
             azure_deployment=OPENAI_DEPLOYMENT_NAME,
             azure_endpoint=f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-10-21",
             openai_api_key=OPENAI_API_KEY,
             openai_api_version="2024-10-21"
         )
-    else:
-        st.error("❌ Required Azure environment variables are missing!")
 
 except Exception as e:
     st.error(f"❌ Error initializing Azure OpenAI: {e}")
-
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path):
