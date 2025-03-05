@@ -10,19 +10,16 @@ from langchain_openai import AzureChatOpenAI
 from langchain.schema import HumanMessage
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# Get environment variables from GitHub Actions secrets
-OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
-AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+# Split the secret into individual variables
+if azure_secret:
+    secrets = dict(item.split("=") for item in azure_secret.split(";"))
+    OPENAI_DEPLOYMENT_NAME = secrets.get("OPENAI_DEPLOYMENT_NAME")
+    AZURE_OPENAI_ENDPOINT = secrets.get("AZURE_OPENAI_ENDPOINT")
+    OPENAI_API_KEY = secrets.get("OPENAI_API_KEY")
+    
+else:
+    print("AZURE_SECRET is not set!")
 
-# Print the variables to verify they are retrieved
-print("OPENAI_DEPLOYMENT_NAME:", OPENAI_DEPLOYMENT_NAME)
-print("AZURE_OPENAI_ENDPOINT:", AZURE_OPENAI_ENDPOINT)
-print("OPENAI_API_KEY:", OPENAI_API_KEY)
-
-if not all([OPENAI_DEPLOYMENT_NAME, AZURE_OPENAI_ENDPOINT, OPENAI_API_KEY]):
-    st.error("Missing required environment variables. Check your GitHub Secrets.")
-    st.stop()
 
 # Initialize Azure OpenAI Chat model
 llm = AzureChatOpenAI(
