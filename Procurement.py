@@ -18,7 +18,7 @@ llm = None  # Default to None to prevent NameError
 if AZURE_SECRET:
     try:
         # Parse the secret into key-value pairs
-        OPENAI_DPELOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
+        OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
         AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
         
