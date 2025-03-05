@@ -21,11 +21,6 @@ if AZURE_SECRET:
         OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
         AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-        
-        # Print variables to debug (remove this in production)
-        print("OPENAI_DEPLOYMENT_NAME:", OPENAI_DEPLOYMENT_NAME)
-        print("AZURE_OPENAI_ENDPOINT:", AZURE_OPENAI_ENDPOINT)
-        print("OPENAI_API_KEY:", OPENAI_API_KEY)
 
         # Ensure all required values are available before initializing
         if OPENAI_DEPLOYMENT_NAME and AZURE_OPENAI_ENDPOINT and OPENAI_API_KEY:
@@ -44,6 +39,7 @@ if AZURE_SECRET:
 else:
     st.error("❌environment variable is not set!")
     st.write("AZURE_SECRET:", os.getenv("AZURE_SECRET"))
+    st.write("AZURE_OPENAI_ENDPOINT:", os.getenv("AZURE_OPENAI_ENDPOINT"))
 
 
 # Function to extract text from PDF
