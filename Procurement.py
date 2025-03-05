@@ -18,11 +18,10 @@ llm = None  # Default to None to prevent NameError
 if AZURE_SECRET:
     try:
         # Parse the secret into key-value pairs
-        secrets = dict(item.split("=") for item in AZURE_SECRET.split(";"))
-        OPENAI_DEPLOYMENT_NAME = secrets.get("OPENAI_DEPLOYMENT_NAME")
-        AZURE_OPENAI_ENDPOINT = secrets.get("AZURE_OPENAI_ENDPOINT")
-        OPENAI_API_KEY = secrets.get("OPENAI_API_KEY")
-
+        OPENAI_DPELOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
+        AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+        
         # Print variables to debug (remove this in production)
         print("OPENAI_DEPLOYMENT_NAME:", OPENAI_DEPLOYMENT_NAME)
         print("AZURE_OPENAI_ENDPOINT:", AZURE_OPENAI_ENDPOINT)
