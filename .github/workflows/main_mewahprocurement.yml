@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-      
+
       - name: Install dependencies
         run: pip install -r requirements.txt
         
@@ -64,7 +64,12 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
+      - name: Set up environment variables
+        run: |
+          echo "OPENAI_DEPLOYMENT_NAME=${{ secrets.OPENAI_DEPLOYMENT_NAME }}" >> $GITHUB_ENV
+          echo "AZURE_OPENAI_ENDPOINT=${{ secrets.AZURE_OPENAI_ENDPOINT }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -78,4 +83,3 @@ jobs:
         with:
           app-name: 'MewahProcurement'
           slot-name: 'Production'
-          
