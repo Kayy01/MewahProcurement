@@ -69,7 +69,8 @@ jobs:
           echo "OPENAI_DEPLOYMENT_NAME=$(echo '${{ secrets.AZURE_SECRET }}' | awk -F ';' '{for(i=1;i<=NF;i++){split($i,a,"="); if(a[1]=="OPENAI_DEPLOYMENT_NAME") print a[2]}}')" >> $GITHUB_ENV
           echo "AZURE_OPENAI_ENDPOINT=$(echo '${{ secrets.AZURE_SECRET }}' | awk -F ';' '{for(i=1;i<=NF;i++){split($i,a,"="); if(a[1]=="AZURE_OPENAI_ENDPOINT") print a[2]}}')" >> $GITHUB_ENV
           echo "OPENAI_API_KEY=$(echo '${{ secrets.AZURE_SECRET }}' | awk -F ';' '{for(i=1;i<=NF;i++){split($i,a,"="); if(a[1]=="OPENAI_API_KEY") print a[2]}}')" >> $GITHUB_ENV
-
+          echo "AZURE_SECRET=$(echo '${{ secrets.AZURE_SECRET }}' | awk -F ';' '{for(i=1;i<=NF;i++){split($i,a,"="); if(a[1]=="OPENAI_API_KEY") print a[2]}}')" >> $GITHUB_ENV
+          
 
       - name: Login to Azure
         uses: azure/login@v2
