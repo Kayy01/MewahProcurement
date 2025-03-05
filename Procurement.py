@@ -44,6 +44,7 @@ if AZURE_SECRET:
 
 else:
     st.error("❌environment variable is not set!")
+    print("AZURE_SECRET:",AZURE_SECRET)
 
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path):
