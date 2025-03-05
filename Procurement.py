@@ -12,6 +12,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Retrieve the combined secret
 AZURE_SECRET = os.getenv("AZURE_SECRET")
+AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
 
 llm = None  # Default to None to prevent NameError
 
