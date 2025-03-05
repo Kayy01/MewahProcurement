@@ -13,30 +13,38 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 # Retrieve the combined secret
 azure_secret = os.getenv("AZURE_SECRET")
 
-# Split the secret into individual variables if it exists
-if azure_secret:
-    secrets = dict(item.split("=") for item in azure_secret.split(";"))
-    OPENAI_DEPLOYMENT_NAME = secrets.get("OPENAI_DEPLOYMENT_NAME")
-    AZURE_OPENAI_ENDPOINT = secrets.get("AZURE_OPENAI_ENDPOINT")
-    OPENAI_API_KEY = secrets.get("OPENAI_API_KEY")
-    
-    # Print the variables to verify they are correctly retrieved
-    print("OPENAI_DEPLOYMENT_NAME:", OPENAI_DEPLOYMENT_NAME)
-    print("AZURE_OPENAI_ENDPOINT:", AZURE_OPENAI_ENDPOINT)
-    print("OPENAI_API_KEY:", OPENAI_API_KEY)
+llm = None  # Default to None to prevent NameError
 
-    # Initialize Azure OpenAI Chat model
-    if OPENAI_DEPLOYMENT_NAME and AZURE_OPENAI_ENDPOINT and OPENAI_API_KEY:
-        llm = AzureChatOpenAI(
-            azure_deployment=OPENAI_DEPLOYMENT_NAME,
-            azure_endpoint=f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-10-21",
-            openai_api_key=OPENAI_API_KEY,
-            openai_api_version="2024-10-21"
-        )
-    else:
-        print("Required environment variables are missing!")
+if azure_secret:
+    try:
+        # Parse the secret into key-value pairs
+        secrets = dict(item.split("=") for item in azure_secret.split(";"))
+        OPENAI_DEPLOYMENT_NAME = secrets.get("OPENAI_DEPLOYMENT_NAME")
+        AZURE_OPENAI_ENDPOINT = secrets.get("AZURE_OPENAI_ENDPOINT")
+        OPENAI_API_KEY = secrets.get("OPENAI_API_KEY")
+
+        # Print variables to debug (remove this in production)
+        print("OPENAI_DEPLOYMENT_NAME:", OPENAI_DEPLOYMENT_NAME)
+        print("AZURE_OPENAI_ENDPOINT:", AZURE_OPENAI_ENDPOINT)
+        print("OPENAI_API_KEY:", OPENAI_API_KEY)
+
+        # Ensure all required values are available before initializing
+        if OPENAI_DEPLOYMENT_NAME and AZURE_OPENAI_ENDPOINT and OPENAI_API_KEY:
+            llm = AzureChatOpenAI(
+                azure_deployment=OPENAI_DEPLOYMENT_NAME,
+                azure_endpoint=f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-10-21",
+                openai_api_key=OPENAI_API_KEY,
+                openai_api_version="2024-10-21"
+            )
+        else:
+            st.error("❌ Required Azure environment variables are missing!")
+
+    except Exception as e:
+        st.error(f"❌ Error parsing AZURE_SECRET: {e}")
+
 else:
-    print("AZURE_SECRET is not set!")
+    st.error("❌ AZURE_SECRET environment variable is not set!")
+
 # Function to extract text from PDF
 def extract_text_from_pdf(pdf_path):
     text = ""
