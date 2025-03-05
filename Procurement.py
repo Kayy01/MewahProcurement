@@ -10,37 +10,27 @@ from langchain_openai import AzureChatOpenAI
 from langchain.schema import HumanMessage
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-# Retrieve the combined secret
-AZURE_SECRET = os.getenv("AZURE_SECRET")
-AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
+# Hardcode the secret and endpoint values
+OPENAI_DEPLOYMENT_NAME = "gpt-4o-mini"  # Replace with your actual deployment name
+AZURE_OPENAI_ENDPOINT = "https://karee-m7bdp3kk-eastus2.cognitiveservices.azure.com"  # Replace with your actual endpoint
+OPENAI_API_KEY = "9H2xSSea55fgTnoiHe38HqhygQvQTN5kTiB6jcCLy28tC6DAOF1HJQQJ99BBACHYHv6XJ3w3AAAAACOGNGmv"  # Replace with your actual API key
 
 llm = None  # Default to None to prevent NameError
 
-if AZURE_SECRET:
-    try:
-        # Parse the secret into key-value pairs
-        OPENAI_DEPLOYMENT_NAME = os.getenv("OPENAI_DEPLOYMENT_NAME")
-        AZURE_OPENAI_ENDPOINT = os.getenv("AZURE_OPENAI_ENDPOINT")
-        OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+try:
+    # Ensure all required values are available before initializing
+    if OPENAI_DEPLOYMENT_NAME and AZURE_OPENAI_ENDPOINT and OPENAI_API_KEY:
+        llm = AzureChatOpenAI(
+            azure_deployment=OPENAI_DEPLOYMENT_NAME,
+            azure_endpoint=f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-10-21",
+            openai_api_key=OPENAI_API_KEY,
+            openai_api_version="2024-10-21"
+        )
+    else:
+        st.error("❌ Required Azure environment variables are missing!")
 
-        # Ensure all required values are available before initializing
-        if OPENAI_DEPLOYMENT_NAME and AZURE_OPENAI_ENDPOINT and OPENAI_API_KEY:
-            llm = AzureChatOpenAI(
-                azure_deployment=OPENAI_DEPLOYMENT_NAME,
-                azure_endpoint=f"{AZURE_OPENAI_ENDPOINT}/openai/deployments/{OPENAI_DEPLOYMENT_NAME}/chat/completions?api-version=2024-10-21",
-                openai_api_key=OPENAI_API_KEY,
-                openai_api_version="2024-10-21"
-            )
-        else:
-            st.error("❌ Required Azure environment variables are missing!")
-
-    except Exception as e:
-        st.error(f"❌ Error parsing AZURE_SECRET: {e}")
-
-else:
-    st.error("❌environment variable is not set!")
-    st.write("AZURE_SECRET:", os.getenv("AZURE_SECRET"))
-    st.write("AZURE_OPENAI_ENDPOINT:", os.getenv("AZURE_OPENAI_ENDPOINT"))
+except Exception as e:
+    st.error(f"❌ Error initializing Azure OpenAI: {e}")
 
 
 # Function to extract text from PDF
