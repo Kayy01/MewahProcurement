@@ -11,7 +11,7 @@ from langchain.schema import HumanMessage
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 # Split the secret into individual variables
-if azure_secret:
+if AZURE_SECRET:
     secrets = dict(item.split("=") for item in azure_secret.split(";"))
     OPENAI_DEPLOYMENT_NAME = secrets.get("OPENAI_DEPLOYMENT_NAME")
     AZURE_OPENAI_ENDPOINT = secrets.get("AZURE_OPENAI_ENDPOINT")
