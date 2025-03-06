@@ -78,6 +78,7 @@ def process_document(file):
         
         **Formatting Rules:**
         - Extract all item names and descriptions in a structured manner. DO NOT add any extra comments!
+        - Do not extract Price!
         - Maintain logical sentence breaks.
         - Format the extracted data properly for user readability.
         - Each line should have max **45 characters**.
@@ -85,11 +86,13 @@ def process_document(file):
         - If exceeding 45 characters, split into a new row.
 
         Do not add any extra symbols before the answer.
+        Do not add unnecessary gaps in between output.
         Do not add any extra words/comment in the answer. Strictly follow formatting rules.
         """
         
         response = llm.invoke([HumanMessage(content=prompt)])
-        extracted_data.append(response.content.strip())
+        # Convert the extracted data to uppercase before appending
+        extracted_data.append(response.content.strip().upper())
     
     return extracted_data
 
@@ -133,7 +136,8 @@ if "extracted_data" in st.session_state and st.session_state["extracted_data"]:
 
             # Use edited data instead of original extracted data
             for row_text in st.session_state["edited_data"]:
-                sheet.cell(row=row_idx, column=desc_col, value=row_text).alignment = Alignment(wrap_text=True)
+                # Convert the edited text to uppercase before writing it to the Excel sheet
+                sheet.cell(row=row_idx, column=desc_col, value=row_text.upper()).alignment = Alignment(wrap_text=True)
                 if desc2_col:
                     sheet.cell(row=row_idx, column=desc2_col, value="")  # Keep Description 2 blank
                 row_idx += 1  # Move to the next row
